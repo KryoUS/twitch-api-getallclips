@@ -5,6 +5,7 @@ const moment = require('moment');
 //Add your Twitch ClientID and ClientSecret
 const clientId = '';
 const clientSecret = '';
+const broadcasterId = '94267141'; //Sean_VR
 
 //Set the API Rate Limit for Axios to 13 per second.
 /* 
@@ -24,7 +25,7 @@ function twitchClips(token, endTime) {
     let startTime = moment(endTime).subtract(1, 'hours').toISOString().split('.')[0]+"Z";
 
     //Get Clips with client and auth headers, encoding the ending time and starting time
-    api.get(`https://api.twitch.tv/helix/clips?broadcaster_id=94267141&ended_at=${encodeURI(endTime)}&first=100&started_at=${encodeURI(startTime)}`, {
+    api.get(`https://api.twitch.tv/helix/clips?broadcaster_id=${broadcasterId}&ended_at=${encodeURI(endTime)}&first=100&started_at=${encodeURI(startTime)}`, {
         headers: {
             'Client-Id': clientId,
             Authorization: `Bearer ${token}`
@@ -37,6 +38,7 @@ function twitchClips(token, endTime) {
         clipCount = clipCount + clips.data.data.length;
         
         //If the date is May 24, 2016 then we can stop making calls. (Clips started on Twitch on the 25th)
+        //NOTE: Moment indexs months like an array, starting with January as 0
         if (moment(endTime).year() === 2016 && moment(endTime).month() === 4 && moment(endTime).day() === 24) {
             console.log('Done!');
         } else {
